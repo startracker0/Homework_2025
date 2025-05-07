@@ -17,7 +17,7 @@
 │   ├── training_history.png    
 │   └── predictions.png         
 ├── models/         
-│   ├── resnet/          
+│   ├── resnet.py          
 ├── train.py             
 ├── test.py            
 └── README.md           
