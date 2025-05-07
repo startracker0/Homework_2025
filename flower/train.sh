@@ -1,1 +1,0 @@
-python train.py --batch_size 32 --epochs 20 --model_type resnet50

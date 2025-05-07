@@ -8,7 +8,6 @@ import json
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.colors import LinearSegmentedColormap
 
 def imshow(inp, ax, title=None):
     inp = inp.numpy().transpose((1, 2, 0))
@@ -37,7 +36,7 @@ def save_prediction_visuals(dataset, all_preds, all_labels, idx_to_class, num_im
 
 # 参数设置
 parser = argparse.ArgumentParser(description='测试花卉分类模型')
-parser.add_argument('--data_dir', type=str, default='./flower_data', help='数据集路径')
+parser.add_argument('--data_dir', type=str, default='/home/xuxiaoran/flower/flower_data', help='数据集路径')
 parser.add_argument('--model_path', type=str,default='./outputs/best_model_resnet50.pth', help='训练好的模型路径')
 parser.add_argument('--model_type', type=str, default='resnet50', choices=['resnet18', 'resnet34', 'resnet50', 'resnet101'], help='ResNet模型类型')
 parser.add_argument('--batch_size', type=int, default=32, help='测试批量大小')

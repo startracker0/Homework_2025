@@ -2,19 +2,19 @@ import os
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import numpy as np
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
-from torchvision import datasets, transforms, models
+from torchvision import datasets, transforms
 from tqdm import tqdm
 import argparse
+from models.resnet import ResNet, BasicBlock, Bottleneck
 
 # 命令行参数
 parser = argparse.ArgumentParser(description='花卉分类ResNet训练')
 parser.add_argument('--batch_size', type=int, default=32, help='批量大小')
 parser.add_argument('--epochs', type=int, default=20, help='训练轮数')
 parser.add_argument('--lr', type=float, default=0.001, help='学习率')
-parser.add_argument('--data_dir', type=str, default='./flower_data', help='数据集路径')
+parser.add_argument('--data_dir', type=str, default='/home/xuxiaoran/flower/flower_data', help='数据集路径')
 parser.add_argument('--model_type', type=str, default='resnet50', choices=['resnet18', 'resnet34', 'resnet50', 'resnet101'], help='ResNet模型类型')
 parser.add_argument('--output_dir', type=str, default='./outputs', help='输出目录')
 args = parser.parse_args()
@@ -65,20 +65,20 @@ print(f"验证集大小: {dataset_sizes['valid']}")
 print(f"类别数: {num_classes}")
 print(f"类别: {class_names}")
 
-# 加载预训练ResNet模型
-print(f"加载 {args.model_type} 模型...")
-if args.model_type == 'resnet18':
-    model = models.resnet18(pretrained=True)
-elif args.model_type == 'resnet34':
-    model = models.resnet34(pretrained=True)
-elif args.model_type == 'resnet101':
-    model = models.resnet101(pretrained=True)
-else:  # 默认使用resnet50
-    model = models.resnet50(pretrained=True)
 
-# 修改全连接层以适应我们的分类任务
-num_ftrs = model.fc.in_features
-model.fc = nn.Linear(num_ftrs, num_classes)
+def resnet_custom(num_classes, model_type='resnet50'):
+    if model_type == 'resnet18':
+        return ResNet(BasicBlock, [2, 2, 2, 2], num_classes)
+    elif model_type == 'resnet34':
+        return ResNet(BasicBlock, [3, 4, 6, 3], num_classes)
+    elif model_type == 'resnet50':
+        return ResNet(Bottleneck, [3, 4, 6, 3], num_classes)
+    elif model_type == 'resnet101':
+        return ResNet(Bottleneck, [3, 4, 23, 3], num_classes)
+
+# 替换加载模型部分
+print(f"加载自定义 {args.model_type} 模型...")
+model = resnet_custom(num_classes, args.model_type)
 model = model.to(device)
 
 # 定义损失函数和优化器
